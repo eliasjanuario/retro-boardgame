@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mímica — Palavra</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+        background: #0a0610;
+        color: #f4e7c8;
+      }
+
+      .card {
+        width: min(100%, 420px);
+        padding: 28px 22px;
+        border-radius: 16px;
+        border: 2px solid rgba(94, 242, 255, 0.55);
+        background: linear-gradient(180deg, #1a1028, #0c0814);
+        box-shadow: 0 0 28px rgba(94, 242, 255, 0.2);
+        text-align: center;
+      }
+
+      .label {
+        margin: 0 0 8px;
+        color: #5ef2ff;
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .category {
+        margin: 0 0 22px;
+        color: #ffeb3b;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .word {
+        margin: 0;
+        padding: 18px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        font-size: clamp(1.8rem, 8vw, 2.6rem);
+        font-weight: 800;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      .hint {
+        margin: 18px 0 0;
+        color: rgba(244, 231, 200, 0.55);
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <p class="label">Categoria</p>
+      <p id="category" class="category">—</p>
+      <p class="label">Palavra</p>
+      <p id="word" class="word">—</p>
+      <p class="hint">Só o desenhista deve ver isto.</p>
+    </main>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get("c") || params.get("categoria") || "—";
+      const word = params.get("p") || params.get("palavra") || "—";
+      document.getElementById("category").textContent = category;
+      document.getElementById("word").textContent = word;
+      document.title = "Mímica: " + word;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Casino Pixel Adventure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside
+        id="sidebar-left"
+        class="sidebar-left"
+        aria-label="Jogadores"
+      ></aside>
+
+      <main class="main-content" aria-label="Tabuleiro">
+        <div class="board-viewport">
+          <div id="board" class="board-container">
+            <div
+              id="pawns"
+              class="players-container"
+              aria-label="Peões dos jogadores"
+            ></div>
+          </div>
+        </div>
+      </main>
+
+      <aside class="sidebar-right" aria-label="Controles">
+        <h1 class="game-title">Casino Pixel Adventure</h1>
+
+        <div class="action-buttons">
+          <input
+            type="file"
+            id="input-save"
+            accept="application/json,.json"
+            hidden
+          />
+          <button type="button" id="btn-roll" class="btn btn--primary">
+            Rolar Dado
+          </button>
+          <button type="button" id="btn-special-card" class="btn btn--secondary">
+            Usar Carta Especial
+          </button>
+          <button
+            type="button"
+            id="btn-roleta"
+            class="btn btn-dourado"
+            style="display: none"
+          >
+            Girar Roleta VIP!
+          </button>
+          <button type="button" id="btn-acumular-rodada" class="btn btn--secondary">
+            Acumular Rodada
+          </button>
+          <button type="button" id="btn-modo-teste" class="btn btn--secondary">
+            Modo Teste: OFF
+          </button>
+          <button type="button" id="btn-save" class="btn btn--secondary">
+            Salvar
+          </button>
+          <button type="button" id="btn-load-save" class="btn btn--secondary">
+            Carregar
+          </button>
+          <button type="button" id="btn-recenter-board" class="btn btn--secondary">
+            Centralizar Tabuleiro
+          </button>
+        </div>
+
+        <div class="dice-zone">
+          <div id="dice-display" class="dice-display" aria-label="Dado">-</div>
+          <div
+            id="dice-modifier-text"
+            class="dice-modifier-text"
+            hidden
+            aria-live="polite"
+          ></div>
+        </div>
+
+        <div
+          class="reserved-space"
+          id="event-zone"
+          aria-label="Espaço reservado"
+        ></div>
+      </aside>
+    </div>
+
+    <div id="turn-banner" class="turn-banner" hidden>Vez de: —</div>
+
+    <div id="game-modal" class="modal" hidden aria-hidden="true">
+      <div
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <h2 id="modal-title" class="modal__title"></h2>
+        <p id="modal-text" class="modal__text"></p>
+        <button type="button" id="modal-ok" class="btn btn--primary">OK</button>
+      </div>
+    </div>
+
+    <div
+      id="pictionary-category-modal"
+      class="modal modal--pictionary"
+      hidden
+      aria-hidden="true"
+    >
+      <div
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pictionary-category-title"
+      >
+        <h2 id="pictionary-category-title" class="modal__title">
+          Escolha a categoria
+        </h2>
+        <p class="modal__text">Dado 6! Escolhe a categoria da mímica.</p>
+        <div id="pictionary-category-buttons" class="pictionary-category-buttons"></div>
+      </div>
+    </div>
+
+    <div id="attack-modal" class="modal modal--attack" hidden aria-hidden="true">
+      <div
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="attack-modal-title"
+      >
+        <h2 id="attack-modal-title" class="modal__title">Modo de Ataque</h2>
+        <p id="attack-modal-text" class="modal__text">
+          Escolha um alvo para usar sua carta especial.
+        </p>
+        <label class="modal__label" for="attack-target">Alvo</label>
+        <select id="attack-target" class="modal__select"></select>
+        <button type="button" id="attack-confirm" class="btn btn--primary">
+          Confirmar Ataque
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="roulette-modal"
+      class="roulette-modal"
+      hidden
+      aria-hidden="true"
+    >
+      <div
+        class="roulette-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="roulette-modal-title"
+      >
+        <h2 id="roulette-modal-title" class="roulette-modal__title">
+          Roleta VIP
+        </h2>
+        <div id="roulette-result" class="roulette-result">?</div>
+        <button
+          type="button"
+          id="btn-aplicar-roleta"
+          class="btn btn--primary"
+          disabled
+        >
+          Aplicar Efeito
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="card-activation-modal"
+      class="card-activation-modal"
+      hidden
+      aria-hidden="true"
+    >
+      <p id="card-activation-title" class="card-activation-modal__title">
+        FULANO USOU:
+      </p>
+      <img
+        id="activated-card-image"
+        class="activated-card-image"
+        alt="Carta ativada"
+      />
+      <div id="card-effect-text" class="card-effect-text"></div>
+      <button type="button" id="btn-fechar-ativacao" class="btn btn--activation">
+        Aplicar Efeito!
+      </button>
+    </div>
+
+    <div
+      id="card-preview-overlay"
+      class="card-preview-overlay"
+      hidden
+      aria-hidden="true"
+    >
+      <button
+        type="button"
+        id="card-preview-close"
+        class="card-preview-overlay__close"
+        aria-label="Fechar pré-visualização"
+      >
+        ×
+      </button>
+      <img
+        id="card-preview-image"
+        class="card-preview-overlay__image"
+        alt="Pré-visualização da carta"
+      />
+      <p id="card-preview-caption" class="card-preview-overlay__caption"></p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="pictionary-db.js" defer></script>
+    <script src="js/dom.js" defer></script>
+    <script src="js/board.js" defer></script>
+    <script src="js/questions.js" defer></script>
+    <script src="js/players.js" defer></script>
+    <script src="js/state.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/turns.js" defer></script>
+    <script src="js/events.js" defer></script>
+    <script src="js/cards.js" defer></script>
+    <script src="js/roulette.js" defer></script>
+    <script src="js/pictionary.js" defer></script>
+    <script src="js/dice.js" defer></script>
+    <script src="js/camera.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </body>
+</html>
