@@ -14,7 +14,7 @@ const spellCards = {
   },
   deni: {
     name: "Pô velho!",
-    desc: "Alvo sob efeito: o dado é virado de cabeça para baixo (1 vira 6, 2 vira 5, etc.).",
+    desc: "Alvo sob efeito: se tirar 4, 5 ou 6, o dado vai para a face inversa (4 vira 3, 5 vira 2, 6 vira 1).",
     effect(target) {
       ensureStatus(target).invertDiceFace = true;
     },

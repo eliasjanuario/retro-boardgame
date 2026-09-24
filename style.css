@@ -439,6 +439,67 @@ body {
   animation: pulse-card-vip 1.5s infinite alternate !important;
 }
 
+.vip-particles {
+  position: absolute;
+  width: 5.2%;
+  height: 9.2%;
+  transform: translate(-50%, -88%) scale(1.5);
+  transform-origin: bottom center;
+  transition: left 0.5s ease, top 0.5s ease, opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vip-particles.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.vip-particle {
+  position: absolute;
+  bottom: 10%;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  background: #ffd700;
+  box-shadow: 0 0 4px #ff8c00, 0 0 8px rgba(255, 215, 0, 0.8);
+  image-rendering: pixelated;
+  opacity: 0;
+  animation: vip-particle-rise var(--duration) linear var(--delay) infinite;
+  animation-play-state: paused;
+}
+
+.vip-particle:nth-child(3n) {
+  background: #fff6b0;
+}
+
+.vip-particle:nth-child(4n) {
+  background: #ffaa00;
+}
+
+.vip-particles.active .vip-particle {
+  animation-play-state: running;
+}
+
+@keyframes vip-particle-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--drift), calc(var(--rise) * -1)) scale(0.4);
+  }
+}
+
 .dice-modifier-text {
   max-width: 100%;
   margin-top: 4px;
@@ -630,24 +691,29 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
   flex: 0 0 auto;
-  margin: 0 auto 2px;
+  width: 100%;
+  margin: 0 0 3px;
   min-height: 1.35em;
 }
 
 .player-name {
-  display: inline-block;
-  max-width: calc(100% - 2.2rem);
-  padding: 0.18rem 0.35rem;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.22rem 0.4rem;
   border-radius: 999px;
   border: 1px solid rgba(210, 150, 255, 0.7);
   background: linear-gradient(180deg, #2a1638, #140a1c);
   color: #fff;
   font-family: "Share Tech Mono", ui-monospace, monospace;
-  font-size: clamp(0.38rem, 1.1vh, 0.58rem);
-  letter-spacing: 0.03em;
+  font-size: clamp(0.6rem, 1.55vh, 0.8rem);
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
@@ -658,6 +724,7 @@ body {
 }
 
 .rodadas-acumuladas {
+  flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
   min-width: 1.55rem;

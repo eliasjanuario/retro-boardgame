@@ -36,7 +36,8 @@ function createHUDCard(player, idx) {
 
   const name = document.createElement("span");
   name.className = "player-name";
-  name.textContent = `PLAYER ${idx + 1}: ${player.name.toUpperCase()}`;
+  name.textContent = `P${idx + 1} · ${player.name.toUpperCase()}`;
+  name.title = `Player ${idx + 1}: ${player.name}`;
 
   const accumulated = player.accumulatedRounds ?? 0;
   const badge = document.createElement("span");

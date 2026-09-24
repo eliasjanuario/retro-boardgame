@@ -38,8 +38,12 @@ function calculateRoll(player) {
 
   if (status.invertDiceFace) {
     if (!usedDoubleRoll) {
-      finalRoll = 7 - finalRoll;
-      reasons.push("Pô velho! (Dado Invertido)");
+      if (finalRoll >= 4) {
+        finalRoll = 7 - finalRoll;
+        reasons.push("Pô velho! (Dado Invertido)");
+      } else {
+        reasons.push("Pô velho! (Dado Invertido)");
+      }
     }
     status.invertDiceFace = false;
   }

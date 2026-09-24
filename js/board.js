@@ -128,6 +128,42 @@ function applyAvatarAura(avatar, player) {
   avatar.classList.toggle("aura-vip-piece", hasSpecialReady(player));
 }
 
+const VIP_PARTICLE_COUNT = 14;
+
+function createVipParticles(playerName) {
+  const emitter = document.createElement("div");
+  emitter.className = "vip-particles";
+  emitter.dataset.vipParticles = playerName;
+
+  for (let i = 0; i < VIP_PARTICLE_COUNT; i++) {
+    const particle = document.createElement("span");
+    particle.className = "vip-particle";
+    particle.style.setProperty("--x", `${10 + Math.random() * 80}%`);
+    particle.style.setProperty("--drift", `${(Math.random() - 0.5) * 40}px`);
+    particle.style.setProperty("--rise", `${50 + Math.random() * 40}px`);
+    particle.style.setProperty("--size", `${5 + Math.floor(Math.random() * 4)}px`);
+    particle.style.setProperty("--duration", `${1.2 + Math.random() * 1.2}s`);
+    particle.style.setProperty("--delay", `${-Math.random() * 2.4}s`);
+    emitter.appendChild(particle);
+  }
+
+  playersContainer.appendChild(emitter);
+  return emitter;
+}
+
+function updateVipParticles(player, coord, isVip) {
+  let emitter = playersContainer.querySelector(
+    `[data-vip-particles="${player.name}"]`
+  );
+  if (!emitter) {
+    emitter = createVipParticles(player.name);
+  }
+
+  emitter.classList.toggle("active", isVip);
+  emitter.style.left = coord.x;
+  emitter.style.top = coord.y;
+}
+
 function renderPlayers() {
   let anyMoved = false;
   let anyAuraGained = false;
@@ -166,6 +202,11 @@ function renderPlayers() {
     avatar.style.left = coord.x;
     avatar.style.top = coord.y;
     avatar.style.zIndex = String(idx + 1);
+    updateVipParticles(
+      player,
+      coord,
+      avatar.classList.contains("aura-vip-piece")
+    );
   });
 
   if (anyMoved) {
