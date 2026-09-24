@@ -145,6 +145,7 @@ function rollDice() {
   const player = gameState.players[playerIndex];
   const { originalRoll, finalRoll, changeReason, delta } =
     calculateRoll(player);
+  playSound("dice");
 
   rollingDice = true;
   rollButton.disabled = true;

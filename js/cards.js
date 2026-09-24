@@ -146,6 +146,7 @@ function useCard() {
     pendingRoll = null;
   }
 
+  playSound("card");
   pendingTargetSelection = null;
   restoreAttackModalTexts();
   populateAttackTargets();
@@ -179,6 +180,7 @@ function showCardActivation(player, target, spellCard) {
 
   cardActivationModal.hidden = false;
   cardActivationModal.setAttribute("aria-hidden", "false");
+  playSound("cardHit");
 
   closeActivationButton.onclick = () => {
     cardActivationModal.hidden = true;

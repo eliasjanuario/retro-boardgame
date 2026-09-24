@@ -128,12 +128,16 @@ function applyAvatarAura(avatar, player) {
 }
 
 function renderPlayers() {
+  let anyMoved = false;
+  let anyAuraGained = false;
+
   gameState.players.forEach((player, idx) => {
     const square = Math.min(Math.max(player.currentPosition, 0), lastSquare);
     const coord = mapCoordinates[square];
     let avatar = playersContainer.querySelector(
       `[data-player="${player.name}"]`
     );
+    const isNewAvatar = !avatar;
 
     if (!avatar) {
       avatar = document.createElement("img");
@@ -144,11 +148,29 @@ function renderPlayers() {
       playersContainer.appendChild(avatar);
     }
 
+    const hadVipAura = avatar.classList.contains("aura-vip-piece");
     applyAvatarAura(avatar, player);
     updateHUDAlert(player, idx);
 
+    if (!isNewAvatar) {
+      if (!hadVipAura && avatar.classList.contains("aura-vip-piece")) {
+        anyAuraGained = true;
+      }
+      if (avatar.dataset.square !== String(square)) {
+        anyMoved = true;
+      }
+    }
+
+    avatar.dataset.square = String(square);
     avatar.style.left = coord.x;
     avatar.style.top = coord.y;
     avatar.style.zIndex = String(idx + 1);
   });
+
+  if (anyMoved) {
+    playSound("jump");
+  }
+  if (anyAuraGained) {
+    playSound("powerUp");
+  }
 }

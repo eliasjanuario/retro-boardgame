@@ -237,6 +237,7 @@ function evaluateSquare(playerIndex, diceNumber) {
 
   if (squareType === 4) {
     const event = advanceEvents[square];
+    playSound("advantage");
 
     if (!event) {
       finishPlay();
@@ -259,6 +260,7 @@ function evaluateSquare(playerIndex, diceNumber) {
 
   if (squareType === 0) {
     const event = setbackEvents[square];
+    playSound("setback");
 
     if (!event) {
       finishPlay();
