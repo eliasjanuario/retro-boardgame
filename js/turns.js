@@ -12,12 +12,17 @@ function advanceTurn() {
   const total = gameState.players.length;
   const penaltyNotices = [];
   let skips = 0;
+  let reshuffled = false;
 
   do {
     gameState.currentTurn = (gameState.currentTurn + 1) % total;
 
     if (gameState.currentTurn === 0) {
       gameState.currentRound += 1;
+      if (gameState.shuffleEachRound) {
+        shufflePlayerOrder(outgoingPlayer);
+        reshuffled = true;
+      }
     }
 
     const currentPlayer = gameState.players[gameState.currentTurn];
@@ -35,6 +40,14 @@ function advanceTurn() {
 
     break;
   } while (skips < total);
+
+  if (reshuffled) {
+    revealRoundOrder(() => {
+      updatePanel();
+      openModalSequence(penaltyNotices);
+    });
+    return;
+  }
 
   updatePanel();
   openModalSequence(penaltyNotices);

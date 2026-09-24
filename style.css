@@ -1015,6 +1015,105 @@ body {
   display: none;
 }
 
+.turn-order-modal {
+  z-index: 60;
+  background: rgba(6, 2, 1, 0.88);
+}
+
+.modal__dialog.turn-order__dialog {
+  width: min(900px, 100%);
+  max-height: calc(100vh - 2.5rem);
+  overflow-y: auto;
+  padding: 1.5rem 1.6rem 1.6rem;
+}
+
+.turn-order-list {
+  display: grid;
+  grid-template-columns: repeat(8, 92px);
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.turn-order-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 92px;
+  padding: 10px 4px 12px;
+  border: 2px solid #a07438;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2c1b12 0%, #140b08 100%);
+  box-shadow: inset 0 0 0 1px rgba(230, 193, 90, 0.35);
+}
+
+.turn-order-item.is-current {
+  border-color: var(--gold);
+  box-shadow:
+    inset 0 0 0 1px rgba(230, 193, 90, 0.6),
+    0 0 14px rgba(255, 215, 0, 0.45);
+}
+
+@media (max-width: 940px) {
+  .turn-order-list {
+    grid-template-columns: repeat(4, 92px);
+  }
+}
+
+.turn-order-item.is-done {
+  opacity: 0.4;
+  filter: grayscale(0.8);
+}
+
+.turn-order-item__pos {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+  color: var(--gold);
+}
+
+.turn-order-item__avatar {
+  width: 64px;
+  height: 78px;
+  object-fit: contain;
+  object-position: center bottom;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+.turn-order-item__name {
+  font-family: "Share Tech Mono", ui-monospace, monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.turn-order-list.is-shuffling .turn-order-item {
+  animation: dice-shake 0.18s ease-in-out infinite;
+}
+
+.turn-order-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(460px, 100%);
+}
+
+#btn-keep-order,
+#btn-shuffle-order {
+  font-size: 0.62rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.turn-order-actions .btn[hidden] {
+  display: none;
+}
+
 .roulette-modal {
   position: fixed;
   inset: 0;

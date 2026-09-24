@@ -22,6 +22,7 @@ function createHUDCard(player, idx) {
   const card = document.createElement("div");
   card.className = "player-card";
   card.dataset.hudIndex = String(idx);
+  card.dataset.playerName = player.name;
 
   if (idx === gameState.currentTurn) {
     card.classList.add("is-active");
@@ -108,10 +109,35 @@ function closeCardPreview() {
 
 function renderHUD() {
   const sidebar = document.querySelector(".sidebar-left");
+  const previousRects = new Map();
+
+  sidebar.querySelectorAll(".player-card").forEach((card) => {
+    previousRects.set(card.dataset.playerName, card.getBoundingClientRect());
+  });
+
   sidebar.innerHTML = "";
 
   gameState.players.forEach((player, idx) => {
     sidebar.appendChild(createHUDCard(player, idx));
+  });
+
+  sidebar.querySelectorAll(".player-card").forEach((card) => {
+    const previous = previousRects.get(card.dataset.playerName);
+    if (!previous) {
+      return;
+    }
+
+    const next = card.getBoundingClientRect();
+    const dx = previous.left - next.left;
+    const dy = previous.top - next.top;
+    if (!dx && !dy) {
+      return;
+    }
+
+    card.animate(
+      [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+      { duration: 550, easing: "ease-in-out" }
+    );
   });
 }
 
@@ -165,7 +191,8 @@ function updatePanel() {
     !attackModal.hidden ||
     !cardActivationModal.hidden ||
     !pictionaryCategoryModal.hidden ||
-    !rouletteModal.hidden;
+    !rouletteModal.hidden ||
+    isTurnOrderOpen();
 
   if (rouletteButton) {
     rouletteButton.style.display = hasSpecialReady(player) ? "block" : "none";
@@ -197,7 +224,9 @@ function updatePanel() {
     : "Modo Teste: OFF";
   testModeButton.classList.toggle("is-active-test", Boolean(gameState.testMode));
   updateHUD();
-  showTurnBanner();
+  if (!isTurnOrderOpen()) {
+    showTurnBanner();
+  }
 }
 
 let bannerTimeouts = [];

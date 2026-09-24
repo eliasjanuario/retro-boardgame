@@ -179,6 +179,40 @@
     </div>
 
     <div
+      id="turn-order-modal"
+      class="modal turn-order-modal"
+      hidden
+      aria-hidden="true"
+    >
+      <div
+        class="modal__dialog turn-order__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="turn-order-title"
+      >
+        <h2 id="turn-order-title" class="modal__title">Ordem de Jogo</h2>
+        <p id="turn-order-text" class="modal__text"></p>
+        <ol id="turn-order-list" class="turn-order-list"></ol>
+        <div class="turn-order-actions">
+          <button type="button" id="btn-keep-order" class="btn btn--secondary">
+            Manter Ordem
+          </button>
+          <button type="button" id="btn-shuffle-order" class="btn btn-dourado">
+            🎲 Deixar a Sorte Decidir
+          </button>
+          <button
+            type="button"
+            id="btn-turn-order-continue"
+            class="btn btn--primary"
+            hidden
+          >
+            Começar!
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
       id="card-activation-modal"
       class="card-activation-modal"
       hidden
@@ -231,6 +265,7 @@
     <script src="js/storage.js" defer></script>
     <script src="js/ui.js" defer></script>
     <script src="js/turns.js" defer></script>
+    <script src="js/turn-order.js" defer></script>
     <script src="js/events.js" defer></script>
     <script src="js/cards.js" defer></script>
     <script src="js/roulette.js" defer></script>

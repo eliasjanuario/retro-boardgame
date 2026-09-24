@@ -3,6 +3,7 @@
 function startGame() {
   renderHUD();
   renderPlayers();
+  openTurnOrderSetup();
   updatePanel();
 }
 
@@ -37,6 +38,9 @@ accumulateButton.addEventListener("click", accumulateRound);
 testModeButton.addEventListener("click", toggleTestMode);
 modalOkButton.addEventListener("click", confirmModal);
 confirmAttackButton.addEventListener("click", confirmAttack);
+keepOrderButton.addEventListener("click", keepTurnOrder);
+shuffleOrderButton.addEventListener("click", chooseShuffledOrder);
+turnOrderContinueButton.addEventListener("click", continueTurnOrder);
 
 loadButton.addEventListener("click", () => {
   inputSave.click();
