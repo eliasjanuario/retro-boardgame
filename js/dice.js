@@ -81,6 +81,7 @@ function moveAfterRoll(player, playerIndex, delta, finalRoll) {
   clearDiceMagicFeedback();
   player.currentPosition = clampSquare(player.currentPosition + delta);
   player.lastMove = Math.max(0, delta);
+  player.lastRolledRound = gameState.currentRound;
   renderPlayers();
 
   setTimeout(() => {

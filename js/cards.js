@@ -5,6 +5,10 @@ const spellCards = {
     name: "Esse é o futebol que temos",
     desc: "Alvo sob efeito: qualquer número que ele rolar neste turno não pode passar de 3.",
     effect(target) {
+      if (hasPlayedThisRound(target)) {
+        capLastMove(target, 3);
+        return;
+      }
       ensureStatus(target).maxRoll = 3;
     },
   },
@@ -19,6 +23,12 @@ const spellCards = {
     name: "Desgraaaça",
     desc: "Alvo sob efeito: o movimento deste turno é invertido e ele anda para trás.",
     effect(target) {
+      if (hasPlayedThisRound(target)) {
+        const moved = target.lastMove || 0;
+        target.currentPosition = clampSquare(target.currentPosition - moved);
+        target.lastMove = 0;
+        return;
+      }
       ensureStatus(target).moveBackwards = true;
     },
   },
@@ -47,6 +57,10 @@ const spellCards = {
     name: "Mete a p#*a aí!",
     desc: "Alvo sob efeito: neste turno o movimento fica limitado a no máximo 1 casa.",
     effect(target) {
+      if (hasPlayedThisRound(target)) {
+        capLastMove(target, 1);
+        return;
+      }
       ensureStatus(target).maxRoll = 1;
     },
   },
@@ -97,18 +111,20 @@ function openTargetModal(sourcePlayer, filter, onConfirm) {
   });
 
   if (!targetSelect.options.length) {
-    alert(
-      filter === "frente"
-        ? "Não há jogadores à tua frente."
-        : "Não há alvos disponíveis."
-    );
-    onConfirm(null);
+    openModal({
+      title: "Sem alvos",
+      text:
+        filter === "frente"
+          ? "Não há jogadores à tua frente."
+          : "Não há alvos disponíveis.",
+      onConfirm: () => onConfirm(null),
+    });
     return;
   }
 
   pendingTargetSelection = { onConfirm };
   attackModalTitle.textContent =
-    filter === "frente" ? "Blefe Perfeito" : "Receita Federal";
+    filter === "frente" ? "Blefe Perfeito" : "Auditoria Surpresa";
   attackModalText.textContent =
     filter === "frente"
       ? "Escolhe um jogador à frente para trocar de posição."
@@ -187,12 +203,28 @@ function showCardActivation(player, target, spellCard) {
     cardActivationModal.setAttribute("aria-hidden", "true");
     activatingCard = false;
 
-    spellCard.effect(target);
+    const blocked = isPlayerImmune(target);
+    if (blocked) {
+      target.status.immune = null;
+    } else {
+      spellCard.effect(target);
+    }
     player.cardUses -= 1;
     player.cardRevealed = true;
     renderPlayers();
     updateHUD();
-    advanceTurn();
+
+    if (blocked) {
+      openModal({
+        title: "Acesso VIP!",
+        text: `O Acesso VIP de ${target.name} bloqueou o efeito! A imunidade se desfez.`,
+        type: "verde",
+        onConfirm: finishPlay,
+      });
+      return;
+    }
+
+    finishPlay();
   };
 }
 
@@ -212,11 +244,6 @@ function confirmAttack() {
   const spellCard = spellCards[player.personalCard];
 
   if (!target || targetIndex === gameState.currentTurn || !spellCard) {
-    return;
-  }
-
-  if (isPlayerImmune(target)) {
-    alert(`${target.name} está imune (Acesso VIP)! Escolhe outro alvo.`);
     return;
   }
 

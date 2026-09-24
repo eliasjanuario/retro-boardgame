@@ -147,7 +147,7 @@ const setbackEvents = {
   45: {
     title: "Distracted by the Buffet!",
     desc: "O cheiro do camarão te fez esquecer as fichas no buffet. Vá para a casa 58.",
-    spaces: 13,
+    spaces: -7,
   },
   50: {
     title: "Spilled Drink!",

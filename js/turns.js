@@ -4,19 +4,13 @@ function advanceTurn() {
   const outgoingPlayer = gameState.players[gameState.currentTurn];
   if (outgoingPlayer.status) {
     outgoingPlayer.status.silenced = false;
-
-    if (outgoingPlayer.status.immune && outgoingPlayer.status.immune.turns > 0) {
-      outgoingPlayer.status.immune.turns -= 1;
-      if (outgoingPlayer.status.immune.turns <= 0) {
-        outgoingPlayer.status.immune = null;
-      }
-    }
   }
 
   pendingRoll = null;
   drawnRoulettePower = null;
 
   const total = gameState.players.length;
+  const penaltyNotices = [];
   let skips = 0;
 
   do {
@@ -29,9 +23,11 @@ function advanceTurn() {
     const currentPlayer = gameState.players[gameState.currentTurn];
 
     if ((currentPlayer.penaltyTurns ?? 0) > 0) {
-      alert(
-        `${currentPlayer.name} está atordoado pela Bancarrota e perde a vez! (Restam ${currentPlayer.penaltyTurns} turnos)`
-      );
+      penaltyNotices.push({
+        title: "☠️ BANCARROTA ☠️",
+        text: `${currentPlayer.name} está atordoado pela Bancarrota e perde a vez! (Restam ${currentPlayer.penaltyTurns} turnos)`,
+        type: "vermelho",
+      });
       currentPlayer.penaltyTurns -= 1;
       skips += 1;
       continue;
@@ -41,6 +37,7 @@ function advanceTurn() {
   } while (skips < total);
 
   updatePanel();
+  openModalSequence(penaltyNotices);
 }
 
 /** Ends a full play. If there are accumulated rounds, consumes 1 and keeps the turn. */

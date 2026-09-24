@@ -3,6 +3,7 @@
 const roulettePowers = [
   {
     name: "O Blefe Perfeito",
+    desc: "Troca de lugar com um jogador à sua frente. Se você for o líder da partida, o efeito muda: você avança 6 casas e o segundo colocado recua 3 casas.",
     effect(player, state) {
       const leader = state.players.reduce((prev, current) =>
         prev.currentPosition > current.currentPosition ? prev : current
@@ -34,18 +35,21 @@ const roulettePowers = [
   },
   {
     name: "Acesso VIP",
+    desc: "Concede imunidade persistente. Fica protegido contra o próximo efeito de carta de outro jogador: o efeito é bloqueado e a imunidade se desfaz.",
     effect(player) {
-      ensureStatus(player).immune = { turns: 2 };
+      ensureStatus(player).immune = true;
     },
   },
   {
     name: "Dados Viciados",
+    desc: "Nos seus próximos 2 turnos, você rola dois dados simultaneamente, podendo avançar entre 2 e 12 casas.",
     effect(player) {
       ensureStatus(player).doubleRoll = { turns: 2 };
     },
   },
   {
-    name: "A Receita Federal",
+    name: "Auditoria Surpresa",
+    desc: "Você escolhe um adversário. Ele é pego pela segurança do cassino e é forçado a recuar 10 casas imediatamente, sem direito a defesa.",
     effect(player) {
       return new Promise((resolve) => {
         openTargetModal(player, "qualquer", (target) => {
@@ -59,6 +63,7 @@ const roulettePowers = [
   },
   {
     name: "Blackout no Cassino",
+    desc: "Um ataque em área que atinge a mesa inteira. Todos os outros 7 jogadores recuam 3 casas cada um, enquanto você permanece intacto na sua posição.",
     effect(player, state) {
       state.players.forEach((j) => {
         if (j !== player) {
@@ -69,6 +74,8 @@ const roulettePowers = [
   },
   {
     name: "Ficha de Ouro",
+    desc: "Teleporta você automaticamente para a próxima Casa Verde (evento positivo) à sua frente, garantindo a recompensa daquela casa de imediato.",
+    triggersLandingSquare: true,
     effect(player) {
       if (player.currentPosition >= lastSquare) {
         return;
@@ -84,6 +91,7 @@ const roulettePowers = [
   },
   {
     name: "☠️ BANCARROTA ☠️",
+    desc: "A única fatia negativa. A jogada fracassa miseravelmente, você recua 5 casas e fica atordoado, perdendo a vez por 2 turnos inteiros.",
     effect(player) {
       player.currentPosition = clampSquare(player.currentPosition - 5);
       player.penaltyTurns = (player.penaltyTurns ?? 0) + 2;
@@ -91,12 +99,40 @@ const roulettePowers = [
   },
 ];
 
+function renderRoulettePowerList() {
+  roulettePowerList.innerHTML = "";
+
+  roulettePowers.forEach((power) => {
+    const item = document.createElement("li");
+    item.className = "roulette-power-list__item";
+
+    const name = document.createElement("strong");
+    name.className = "roulette-power-list__name";
+    name.textContent = power.name;
+
+    const desc = document.createElement("span");
+    desc.className = "roulette-power-list__desc";
+    desc.textContent = power.desc;
+
+    item.append(name, desc);
+    roulettePowerList.appendChild(item);
+  });
+}
+
 function openRouletteModal() {
-  rouletteModal.hidden = false;
-  rouletteModal.setAttribute("aria-hidden", "false");
+  renderRoulettePowerList();
+  roulettePowerList.hidden = false;
+  rouletteResult.hidden = true;
   rouletteResult.classList.remove("is-final");
   rouletteResult.textContent = "...";
+  rouletteDescription.hidden = true;
+  rouletteDescription.textContent = "";
+  tryLuckButton.hidden = false;
+  tryLuckButton.disabled = false;
+  applyRouletteButton.hidden = true;
   applyRouletteButton.disabled = true;
+  rouletteModal.hidden = false;
+  rouletteModal.setAttribute("aria-hidden", "false");
 }
 
 function closeRouletteModal() {
@@ -106,7 +142,7 @@ function closeRouletteModal() {
   applyRouletteButton.disabled = true;
 }
 
-function spinVipRoulette() {
+function openVipRoulette() {
   const player = gameState.players[gameState.currentTurn];
 
   if (
@@ -121,13 +157,32 @@ function spinVipRoulette() {
     return;
   }
 
+  drawnRoulettePower = null;
+  openRouletteModal();
+  updatePanel();
+}
+
+function spinVipRoulette() {
+  const player = gameState.players[gameState.currentTurn];
+
+  if (
+    rouletteModal.hidden ||
+    !hasSpecialReady(player) ||
+    spinningRoulette ||
+    drawnRoulettePower
+  ) {
+    return;
+  }
+
   player.usedRoulette = true;
   spinningRoulette = true;
-  drawnRoulettePower = null;
+  tryLuckButton.disabled = true;
+  tryLuckButton.hidden = true;
+  roulettePowerList.hidden = true;
+  rouletteResult.hidden = false;
   renderPlayers();
   updateHUD();
   updatePanel();
-  openRouletteModal();
 
   const startTime = Date.now();
   const duracao = 2500;
@@ -142,6 +197,9 @@ function spinVipRoulette() {
         roulettePowers[Math.floor(Math.random() * roulettePowers.length)];
       rouletteResult.textContent = drawnRoulettePower.name;
       rouletteResult.classList.add("is-final");
+      rouletteDescription.textContent = drawnRoulettePower.desc;
+      rouletteDescription.hidden = false;
+      applyRouletteButton.hidden = false;
       applyRouletteButton.disabled = false;
     }
   }, 50);
@@ -167,6 +225,14 @@ async function applyRouletteEffect() {
   drawnRoulettePower = null;
   renderPlayers();
   renderHUD();
+
+  if (power.triggersLandingSquare && player.currentPosition % 5 === 4) {
+    setTimeout(() => {
+      evaluateSquare(gameState.currentTurn);
+    }, MOVE_DURATION_MS);
+    return;
+  }
+
   finishPlay();
 }
 

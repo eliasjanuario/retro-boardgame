@@ -30,7 +30,8 @@ document.addEventListener("keydown", (event) => {
 saveButton.addEventListener("click", saveGame);
 rollButton.addEventListener("click", rollDice);
 cardButton.addEventListener("click", useCard);
-rouletteButton.addEventListener("click", spinVipRoulette);
+rouletteButton.addEventListener("click", openVipRoulette);
+tryLuckButton.addEventListener("click", spinVipRoulette);
 applyRouletteButton.addEventListener("click", applyRouletteEffect);
 accumulateButton.addEventListener("click", accumulateRound);
 testModeButton.addEventListener("click", toggleTestMode);

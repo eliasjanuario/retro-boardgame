@@ -246,6 +246,19 @@ function openModal({ title, text, type, onConfirm }) {
   cardButton.disabled = true;
 }
 
+function openModalSequence(notices, onDone) {
+  if (!notices.length) {
+    onDone?.();
+    return;
+  }
+
+  const [first, ...rest] = notices;
+  openModal({
+    ...first,
+    onConfirm: () => openModalSequence(rest, onDone),
+  });
+}
+
 function closeModal() {
   pendingModal = null;
   modal.hidden = true;

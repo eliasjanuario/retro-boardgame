@@ -382,10 +382,16 @@ body {
   filter: drop-shadow(0 0 10px purple);
 }
 
-.aura-amarela {
-  color: #ffe44d;
+.aura-azul {
+  color: #3da9ff;
   animation: pulse 1.15s ease-in-out infinite;
-  filter: drop-shadow(0 0 10px yellow);
+  filter: drop-shadow(0 0 10px #3da9ff);
+}
+
+.aura-verde {
+  color: #39ff6a;
+  animation: pulse 1.15s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px #39ff6a);
 }
 
 @keyframes pulse-aura-vip {
@@ -958,7 +964,9 @@ body {
 }
 
 .roulette-modal__dialog {
-  width: min(100%, 420px);
+  width: min(100%, 520px);
+  max-height: 92vh;
+  overflow-y: auto;
   padding: 1.5rem 1.25rem;
   text-align: center;
   border-radius: 14px;
@@ -997,6 +1005,55 @@ body {
   color: #ffd700;
   text-shadow: 0 0 18px rgba(255, 140, 0, 0.85);
   border-color: #ffaa00;
+}
+
+.roulette-result[hidden],
+.roulette-description[hidden],
+.roulette-power-list[hidden],
+.roulette-modal .btn[hidden] {
+  display: none;
+}
+
+.roulette-power-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 52vh;
+  margin: 0 0 1rem;
+  padding: 0 4px 0 0;
+  overflow-y: auto;
+  list-style: none;
+  text-align: left;
+}
+
+.roulette-power-list__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.roulette-power-list__name {
+  color: #ffd700;
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.5rem;
+  line-height: 1.5;
+}
+
+.roulette-power-list__desc {
+  color: #f4e7c8;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.roulette-description {
+  margin: -0.5rem 0 1.25rem;
+  color: #f4e7c8;
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .roulette-modal .btn {

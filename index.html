@@ -160,11 +160,17 @@
         <h2 id="roulette-modal-title" class="roulette-modal__title">
           Roleta VIP
         </h2>
-        <div id="roulette-result" class="roulette-result">?</div>
+        <ul id="roulette-power-list" class="roulette-power-list"></ul>
+        <div id="roulette-result" class="roulette-result" hidden>?</div>
+        <p id="roulette-description" class="roulette-description" hidden></p>
+        <button type="button" id="btn-tentar-sorte" class="btn btn-dourado">
+          Tentar a Sorte
+        </button>
         <button
           type="button"
           id="btn-aplicar-roleta"
           class="btn btn--primary"
+          hidden
           disabled
         >
           Aplicar Efeito

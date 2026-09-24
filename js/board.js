@@ -119,7 +119,8 @@ function applyAvatarAura(avatar, player) {
     "aura-roxa",
     Boolean(status.moveBackwards || status.invertDiceFace)
   );
-  avatar.classList.toggle("aura-amarela", Boolean(status.silenced));
+  avatar.classList.toggle("aura-azul", Boolean(status.silenced));
+  avatar.classList.toggle("aura-verde", isPlayerImmune(player));
   avatar.classList.toggle(
     "aura-vermelha",
     Boolean(status.halveRoll || status.modifier || status.maxRoll)

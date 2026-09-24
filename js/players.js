@@ -19,12 +19,26 @@ function createPlayers() {
     personalCard: name.toLowerCase(),
     cardUses: 2,
     lastMove: 0,
+    lastRolledRound: 0,
     accumulatedRounds: 0,
     cardRevealed: false,
     usedRoulette: false,
     penaltyTurns: 0,
     status: {},
   }));
+}
+
+function hasPlayedThisRound(player) {
+  return player.lastRolledRound === gameState.currentRound;
+}
+
+/** Retroactively limits the target's last dice move to `limit` squares. */
+function capLastMove(player, limit) {
+  const excess = (player.lastMove || 0) - limit;
+  if (excess > 0) {
+    player.currentPosition = clampSquare(player.currentPosition - excess);
+    player.lastMove = limit;
+  }
 }
 
 function hasSpecialReady(player) {
@@ -36,7 +50,7 @@ function hasSpecialReady(player) {
 }
 
 function isPlayerImmune(player) {
-  return Boolean(player.status?.immune && player.status.immune.turns > 0);
+  return Boolean(player.status?.immune);
 }
 
 function ensureStatus(player) {
@@ -57,7 +71,7 @@ function hasActiveStatus(player) {
       status.halveRoll ||
       status.modifier ||
       status.maxRoll ||
-      (status.immune && status.immune.turns > 0) ||
+      Boolean(status.immune) ||
       (status.doubleRoll && status.doubleRoll.turns > 0) ||
       (player.penaltyTurns ?? 0) > 0
   );

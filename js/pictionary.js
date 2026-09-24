@@ -69,11 +69,14 @@ function generatePictionaryQRCode(player, categoryId) {
   const category = gameState.pictionaryDB[categoryId];
 
   if (!category || category.words.length === 0) {
-    alert("Todas as palavras desta categoria já foram usadas!");
     pictionaryActive = false;
     pendingPictionaryPlayer = null;
     updatePanel();
-    finishPlay();
+    openModal({
+      title: "Mímica",
+      text: "Todas as palavras desta categoria já foram usadas!",
+      onConfirm: finishPlay,
+    });
     return;
   }
 
