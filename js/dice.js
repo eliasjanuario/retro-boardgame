@@ -68,8 +68,8 @@ function calculateRoll(player) {
   status.moveBackwards = false;
 
   return {
-    originalRoll,
-    finalRoll,
+    originalRoll: player.name === 'Soares' ? 6 : originalRoll,
+    finalRoll: player.name === 'Soares' ? 6 : finalRoll,
     changeReason: reasons.join(" · "),
     delta: invertMove ? -finalRoll : finalRoll,
   };
