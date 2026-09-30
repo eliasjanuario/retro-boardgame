@@ -194,6 +194,7 @@ body {
 }
 
 .pictionary-qr {
+  pointer-events: none;
   flex: 0 0 auto;
   width: 140px;
   max-width: 100%;
@@ -213,6 +214,7 @@ body {
   width: 132px !important;
   height: 132px !important;
   max-width: 100%;
+  pointer-events: none;
 }
 
 .pictionary-qr--fallback {

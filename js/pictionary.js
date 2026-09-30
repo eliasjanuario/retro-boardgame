@@ -145,9 +145,14 @@ function renderPictionaryPanel(player, hiddenText, categoryName) {
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.L,
     });
+    // qrcodejs puts the payload in title/alt — remove so hover never leaks the word.
+    [qrHost, ...qrHost.querySelectorAll("*")].forEach((el) => {
+      el.removeAttribute("title");
+      el.removeAttribute("alt");
+    });
   } catch (err) {
     console.warn("Falha ao gerar QR:", err);
-    qrHost.textContent = hiddenText;
+    qrHost.textContent = "QR indisponível";
     qrHost.classList.add("pictionary-qr--fallback");
   }
 

@@ -10,7 +10,6 @@ let gameState = {
   currentTurn: 0,
   players: createPlayers(),
   testMode: false,
-  shuffleEachRound: false,
   remainingLightQuestions: shuffleList(createLightQuestionDeck()),
   remainingDarkQuestions: shuffleList(createDarkQuestionDeck()),
   pictionaryDB: createPictionaryDB(),

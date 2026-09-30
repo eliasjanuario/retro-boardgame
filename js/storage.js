@@ -88,7 +88,6 @@ function loadGame(file) {
     }
     delete gameState.remainingQuestions;
     gameState.testMode = Boolean(gameState.testMode);
-    gameState.shuffleEachRound = Boolean(gameState.shuffleEachRound);
     if (!gameState.pictionaryDB) {
       gameState.pictionaryDB = createPictionaryDB();
     }

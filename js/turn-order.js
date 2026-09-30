@@ -1,4 +1,4 @@
-// Turn order screen (before the game) and per-round shuffling.
+// Turn order screen: shown only when starting or loading a game.
 
 const ORDER_SHUFFLE_DURATION_MS = 1400;
 const ORDER_SHUFFLE_STEP_MS = 90;
@@ -35,18 +35,6 @@ function renderTurnOrderList(players, doneCount = 0) {
     item.append(position, avatar, name);
     turnOrderList.appendChild(item);
   });
-}
-
-/** Reorders the players array. Player objects (position, status, cards) are kept as they are. */
-function shufflePlayerOrder(avoidFirst) {
-  const shuffled = shuffleList(gameState.players);
-
-  if (avoidFirst && shuffled.length > 1 && shuffled[0] === avoidFirst) {
-    const swapIdx = 1 + Math.floor(Math.random() * (shuffled.length - 1));
-    [shuffled[0], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[0]];
-  }
-
-  gameState.players = shuffled;
 }
 
 /** Shuffles only who still has to play this round; earlier turns keep their places. */
@@ -88,7 +76,7 @@ function openTurnOrderModal({ title, text, mode, onDone }) {
   keepOrderButton.hidden = !isSetup;
   shuffleOrderButton.hidden = !isSetup;
   turnOrderContinueButton.hidden = isSetup;
-  turnOrderContinueButton.textContent = isSetup ? "Começar!" : "Continuar";
+  turnOrderContinueButton.textContent = "Começar!";
   renderTurnOrderList(gameState.players, gameState.currentTurn);
 
   turnOrderModal.hidden = false;
@@ -112,12 +100,13 @@ function dismissTurnOrderModal() {
   turnOrderOnDone = null;
   turnOrderModal.hidden = true;
   turnOrderModal.setAttribute("aria-hidden", "true");
+  stopMusic();
 }
 
 function openTurnOrderSetup({ loaded = false } = {}) {
   const text = loaded
-    ? `Jogo carregado! Rodada ${gameState.currentRound}, vez de ${gameState.players[gameState.currentTurn].name}. Mantenha a sequência ou deixe a sorte sortear uma nova ordem a cada rodada!`
-    : "Esta é a ordem das peças. Mantenha a sequência ou deixe a sorte sortear uma nova ordem a cada rodada!";
+    ? `Jogo carregado! Rodada ${gameState.currentRound}, vez de ${gameState.players[gameState.currentTurn].name}. Mantenha a sequência ou deixe a sorte decidir a ordem!`
+    : "Esta é a ordem das peças. Mantenha a sequência ou deixe a sorte decidir a ordem!";
 
   openTurnOrderModal({
     title: "Ordem de Jogo",
@@ -133,7 +122,6 @@ function keepTurnOrder() {
     return;
   }
 
-  gameState.shuffleEachRound = false;
   closeTurnOrderModal();
 }
 
@@ -142,24 +130,12 @@ function chooseShuffledOrder() {
     return;
   }
 
-  gameState.shuffleEachRound = true;
   shuffleRemainingTurns();
 
   keepOrderButton.hidden = true;
   shuffleOrderButton.hidden = true;
   turnOrderContinueButton.hidden = false;
-  turnOrderText.textContent =
-    "A sorte decidiu! A ordem será sorteada novamente a cada rodada.";
-  animateOrderShuffle();
-}
-
-function revealRoundOrder(onDone) {
-  openTurnOrderModal({
-    title: `Rodada ${gameState.currentRound}`,
-    text: "A sorte embaralhou a ordem das peças!",
-    mode: "round",
-    onDone,
-  });
+  turnOrderText.textContent = "A sorte decidiu! Esta será a ordem do jogo.";
   animateOrderShuffle();
 }
 

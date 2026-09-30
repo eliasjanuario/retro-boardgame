@@ -252,7 +252,11 @@ function evaluateSquare(playerIndex, diceNumber) {
       onConfirm: () => {
         player.currentPosition = clampSquare(player.currentPosition + event.spaces);
         renderPlayers();
-        finishPlay();
+        // Re-evaluate the destination (question / mimic / another event).
+        // Mimic success (+1) does not call evaluateSquare — that stays skip-only.
+        setTimeout(() => {
+          evaluateSquare(playerIndex, diceNumber);
+        }, MOVE_DURATION_MS);
       },
     });
     return;
@@ -275,7 +279,9 @@ function evaluateSquare(playerIndex, diceNumber) {
       onConfirm: () => {
         player.currentPosition = clampSquare(player.currentPosition + event.spaces);
         renderPlayers();
-        finishPlay();
+        setTimeout(() => {
+          evaluateSquare(playerIndex, diceNumber);
+        }, MOVE_DURATION_MS);
       },
     });
     return;
